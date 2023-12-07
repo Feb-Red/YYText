@@ -662,7 +662,11 @@ dispatch_semaphore_signal(_lock);
         if (container.verticalForm) {
             size.width += container.size.width - (rect.origin.x + rect.size.width);
         } else {
-            size.width += rect.origin.x;
+            //如果是阿拉伯语RTL方向 - 则不需要加上 `rect.origin.x`, 否则Label显示宽度会被设置为`preferredMaxLayoutWidth`的大小
+            if (UIApplication.sharedApplication.userInterfaceLayoutDirection !=
+                UIUserInterfaceLayoutDirectionRightToLeft) {
+                size.width += rect.origin.x;
+            }
         }
         size.height += rect.origin.y;
         if (size.width < 0) size.width = 0;
