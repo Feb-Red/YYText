@@ -1023,6 +1023,16 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
 
 #pragma mark - AutoLayout
 
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    if (self.adjustFitWidth == false) {
+        return;
+    }
+    if (self.preferredMaxLayoutWidth != self.bounds.size.width) {
+        self.preferredMaxLayoutWidth = self.bounds.size.width;
+    }
+}
+
 - (void)setPreferredMaxLayoutWidth:(CGFloat)preferredMaxLayoutWidth {
     if (_preferredMaxLayoutWidth == preferredMaxLayoutWidth) return;
     _preferredMaxLayoutWidth = preferredMaxLayoutWidth;
@@ -1032,8 +1042,7 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
 - (CGSize)intrinsicContentSize {
     if (_preferredMaxLayoutWidth == 0) {
         YYTextContainer *container = [_innerContainer copy];
-        CGSize size = [super intrinsicContentSize];
-        container.size = CGSizeMake(size.width, CGFLOAT_MAX);
+        container.size = YYTextContainerMaxSize;
         
         YYTextLayout *layout = [YYTextLayout layoutWithContainer:container text:_innerText];
         return layout.textBoundingSize;
